@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "title": "Introducción a Node.js",
+    "content": "Node.js es un entorno de ejecución de JavaScript del lado del servidor construido sobre el motor V8 de Chrome.",
+    "author": "Ana García",
+    "published": true,
+    "createdAt": "2024-01-15T10:00:00Z"
+  },
+  {
+    "id": 2,
+    "title": "Express Framework Básico",
+    "content": "Express es el framework web más popular para Node.js. Simplifica la creación de servidores HTTP y APIs REST.",
+    "author": "Carlos López",
+    "published": true,
+    "createdAt": "2024-02-03T14:30:00Z"
+  },
+  {
+    "id": 3,
+    "title": "Borrador: MongoDB Avanzado",
+    "content": "Este artículo aún está en borrador y no debería mostrarse en la API.",
+    "author": "Ana García",
+    "published": false,
+    "createdAt": "2024-02-20T09:15:00Z"
+  },
+  {
+    "id": 4,
+    "title": "Diseño de APIs REST",
+    "content": "Una buena API REST sigue convenciones claras: uso correcto de verbos HTTP, status codes semánticos y URLs coherentes.",
+    "author": "María Torres",
+    "published": true,
+    "createdAt": "2024-03-10T16:45:00Z"
+  },
+  {
+    "id": 5,
+    "title": "Autenticación con JWT",
+    "content": "JSON Web Tokens permiten implementar autenticación stateless en APIs REST de forma segura y escalable.",
+    "author": "Carlos López",
+    "published": false,
+    "createdAt": "2024-03-18T11:00:00Z"
+  }
+]
