@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 /**
  * Verifica el access token en el header Authorization.
@@ -8,8 +8,8 @@ const jwt = require('jsonwebtoken');
 function requireAuth(req, res, next) {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Token requerido' });
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Token requerido" });
   }
 
   const token = authHeader.slice(7);
@@ -19,10 +19,10 @@ function requireAuth(req, res, next) {
     req.user = payload;
     next();
   } catch (err) {
-    if (err.name === 'TokenExpiredError') {
-      return res.status(401).json({ error: 'Token expirado' });
+    if (err.name === "TokenExpiredError") {
+      return res.status(401).json({ error: "Token expirado" });
     }
-    return res.status(401).json({ error: 'Token inválido' });
+    return res.status(401).json({ error: "Token inválido" });
   }
 }
 
