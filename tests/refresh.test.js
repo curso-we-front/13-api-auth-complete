@@ -74,6 +74,18 @@ describe('POST /auth/logout', () => {
   });
 });
 
+// ─── Hashing ──────────────────────────────────────────────────────────────────
+
+describe('Seguridad: hashing de refresh tokens', () => {
+  it('no almacena el refresh token en texto plano en la BD', async () => {
+    const RefreshToken = mongoose.model('RefreshToken');
+    const docs = await RefreshToken.find({});
+    expect(docs.length).toBeGreaterThan(0);
+    const stored = JSON.stringify(docs[0].toJSON());
+    expect(stored).not.toContain(refreshToken);
+  });
+});
+
 // ─── Logout-all ───────────────────────────────────────────────────────────────
 
 describe('POST /auth/logout-all', () => {
