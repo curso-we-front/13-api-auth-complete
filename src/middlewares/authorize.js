@@ -13,7 +13,15 @@
  */
 function authorize(...roles) {
   return (req, res, next) => {
-    // TODO
+    if (!req.user || !req.user.role) {
+      return res.status(403).json({ error: "Acceso denegado" });
+    }
+
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ error: "No tienes permisos suficientes" });
+    }
+
+    next();
   };
 }
 
@@ -24,14 +32,30 @@ function authorize(...roles) {
  * @param {string} paramKey - Nombre del param en req.params (e.g. 'id')
  * @returns {Function} middleware async
  */
-function isOwnerOrAdmin(Model, paramKey = 'id') {
+function isOwnerOrAdmin(Model, paramKey = "id") {
   return async (req, res, next) => {
-    // TODO
-    // 1. Busca el recurso por req.params[paramKey]
-    // 2. Si no existe → 404
-    // 3. Si req.user.role === 'admin' → next()
-    // 4. Si resource.userId o resource.authorId !== req.user.id → 403
-    // 5. Si es el dueño → next()
+    try {
+      const resource = await Model.findById(req.params[paramKey]);
+
+      if (!resource) {
+        return res.status(404).json({ error: "Recurso no encontrado" });
+      }
+
+      if (req.user.role === "admin") {
+        return next();
+      }
+
+      const ownerId =
+        resource.userId?.toString() || resource.authorId?.toString();
+
+      if (!ownerId || ownerId !== req.user.id) {
+        return res.status(403).json({ error: "No autorizado" });
+      }
+
+      next();
+    } catch (err) {
+      return res.status(500).json({ error: "Error del servidor" });
+    }
   };
 }
 

@@ -4,8 +4,8 @@
  * Los tokens se guardan HASHEADOS (nunca en texto plano).
  * Usa crypto.createHash('sha256') para hashear antes de guardar o buscar.
  */
-const mongoose = require('mongoose');
-const crypto = require('crypto');
+const mongoose = require("mongoose");
+const crypto = require("crypto");
 
 // ─── Schema ──────────────────────────────────────────────────────────────────
 
@@ -17,9 +17,24 @@ const refreshTokenSchema = new mongoose.Schema({
   //   tokenHash : String  (el token hasheado)
   //   userId    : mongoose.Schema.Types.ObjectId  (referencia al usuario)
   //   expiresAt : Date
+
+  tokenHash: {
+    type: String,
+    required: true,
+    index: true,
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
+  expiresAt: {
+    type: Date,
+    required: true,
+  },
 });
 
-const RefreshToken = mongoose.model('RefreshToken', refreshTokenSchema);
+const RefreshToken = mongoose.model("RefreshToken", refreshTokenSchema);
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -30,7 +45,7 @@ const RefreshToken = mongoose.model('RefreshToken', refreshTokenSchema);
  * @returns {string}
  */
 function hashToken(token) {
-  return crypto.createHash('sha256').update(token).digest('hex');
+  return crypto.createHash("sha256").update(token).digest("hex");
 }
 
 // ─── Funciones de acceso a BD ─────────────────────────────────────────────────
@@ -42,7 +57,13 @@ function hashToken(token) {
  * @param {Date}   expiresAt
  */
 async function saveRefreshToken(userId, token, expiresAt) {
-  // TODO
+  const tokenHash = hashToken(token);
+
+  return await RefreshToken.create({
+    tokenHash,
+    userId,
+    expiresAt,
+  });
 }
 
 /**
@@ -52,7 +73,19 @@ async function saveRefreshToken(userId, token, expiresAt) {
  * @returns {Promise<object|null>}
  */
 async function findRefreshToken(token) {
-  // TODO
+  const tokenHash = hashToken(token);
+
+  const doc = await RefreshToken.findOne({ tokenHash });
+
+  if (!doc) {
+    return null;
+  }
+
+  if (doc.expiresAt < new Date()) {
+    return null;
+  }
+
+  return doc;
 }
 
 /**
@@ -60,7 +93,9 @@ async function findRefreshToken(token) {
  * @param {string} token
  */
 async function deleteRefreshToken(token) {
-  // TODO
+  const tokenHash = hashToken(token);
+
+  await RefreshToken.deleteOne({ tokenHash });
 }
 
 /**
@@ -69,7 +104,9 @@ async function deleteRefreshToken(token) {
  * @param {string} userId
  */
 async function deleteAllUserTokens(userId) {
-  // TODO
+  await RefreshToken.deleteMany({
+    userId: new mongoose.Types.ObjectId(userId),
+  });
 }
 
 module.exports = {
